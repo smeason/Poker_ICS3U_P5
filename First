@@ -1,15 +1,22 @@
 
-haha
-cripsy
-public static void main (String[] args) {
-    
-    // Call betting
-    
-    // Call flop
-    
-    // Call newCards
-    
+public class GroupAssignmentPoker {
 
-
+	
+	public static void main(String[] args) {
+		
+		System.out.println("     "
+				+ "*~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*"
+				+ " Welcome to the game of Poker! "
+				+ "*~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*");
+		System.out.println("");
+		
+		
+	}
+	
+	static int compareHands () {
+		
+		
+		return 0;
+	}
 
 }
