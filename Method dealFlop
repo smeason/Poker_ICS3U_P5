@@ -1,0 +1,16 @@
+public class DealFlop 
+{
+  public static int dealFlop() {
+    Random r = new Random();
+    
+    // deal cards to 2 players
+    // use communityCards 
+    
+    for(int i = 0; i < 3; i++) {
+      cardNumber = Random.nextInt(52);
+      communityCards[i] = cardNumber;
+    }
+    
+    return communityCards[i];
+  }
+}
