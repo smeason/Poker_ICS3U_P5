@@ -1,6 +1,6 @@
 public class DealFlop 
 {
-  public static int dealFlop() {
+  public static int[] dealFlop() {
     Random r = new Random();
     
     // deal cards to 2 players
