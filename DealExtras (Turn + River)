@@ -1,0 +1,26 @@
+public static int[] dealTurn() {
+    Random r = new Random();
+
+    // deal cards to 2 players
+    // use communityCards
+    
+    int cardNumber;
+    cardNumber = (int) (Math.random()*51+1);
+    cardNumber = checkValid(cardNumber);
+    usedCards[cardNumber] = true;
+    communityCards[3] = deck[cardNumber];    
+    
+    return communityCards; 
+  }
+  
+  public static int[] dealRiver() {
+    Random r = new Random();
+    
+    int cardNumber;
+    cardNumber = (int) (Math.random()*51 + 1);
+    cardNumber = checkValid(cardNumber);
+    usedCards[cardNumber] = true;
+    communityCards[4] = deck[cardNumber];
+    
+    return communityCards;
+  }
