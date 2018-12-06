@@ -1,6 +1,6 @@
 static void compareHands (String p1, String p2) {
 		
-		String[] finalHandP1 = new String[5]; // storing the 2 cards to remove for p1.
+		String[] finalHandP1 = new String[2]; // storing the 2 cards to remove for p1.
 		int c = 0; // counter for index of finalHand array.
 		
 		System.out.println("     Now that the final betting round has been finished, we will now determine the winner.");
@@ -12,13 +12,49 @@ static void compareHands (String p1, String p2) {
 		finalHandP1 = getInput(finalHandP1, p1, p2, c); // doesn't check if both community cards are the same.
 		
 		
-		String[] finalHandP2 = new String[5]; // storing the 2 cards to remove for p2.
+		String[] finalHandP2 = new String[2]; // storing the 2 cards to remove for p2.
 		c = 0;
 		
 		System.out.println("     " + p2 + " will now show their cards to " + p1);
 		sc.nextLine();
 		System.out.println("          " + playerTwoHoleCards[0] + " and " + playerTwoHoleCards[1]);
 		finalHandP2 = getInput(finalHandP2, p1, p2, c);
+		
+		String[] bestHP1 = new String[5]; // stores best hand of player one.
+		
+		bestHP1[0] = playerOneHoleCards[0];
+		bestHP1[1] = playerOneHoleCards[1];
+		
+		int bestHandCounter = 2;
+		for(int i = 0; i < communityCards.length; i++) {
+			if (communityCards[i].equals(finalHandP1[0]) || communityCards[i].equals(finalHandP1[1])) {
+			} else {
+				bestHP1[bestHandCounter] = communityCards[i];
+				bestHandCounter++;
+			}
+		}
+		System.out.println("Best Hand (p1):");
+		for(int i = 0; i < 5; i++) {
+			System.out.println("     " + bestHP1[i]);
+		}
+		
+		String[] bestHP2 = new String[5]; // stores best hand of player two.
+		
+		bestHP2[0] = playerTwoHoleCards[0];
+		bestHP2[1] = playerTwoHoleCards[1];
+		
+		bestHandCounter = 2;
+		for(int i = 0; i < communityCards.length; i++) {
+			if (communityCards[i].equals(finalHandP2[0]) || communityCards[i].equals(finalHandP2[1])) {
+			} else {
+				bestHP2[bestHandCounter] = communityCards[i];
+				bestHandCounter++;
+			}
+		}
+		System.out.println("Best Hand (p2):");
+		for(int i = 0; i < 5; i++) {
+			System.out.println("     " + bestHP2[i]);
+		}
 		
 	}
 	
