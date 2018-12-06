@@ -12,12 +12,16 @@ public class Main {
 
 	static Scanner sc = new Scanner(System.in);
 	static String[] deck = new String[52];
+	static boolean[] usedCards = new boolean[52];
+	
 	static int p1Money = 50;
 	static int p2Money = 50;
 	static String[] playerOneHoleCards = new String[2];
 	static String[] playerTwoHoleCards = new String[2];
 	
 	static String[] communityCards = new String[5];
+	
+	static int turn = 0; // 0 is p1's turn, 1 is p2's turn
 	
 	static void createDeck () {
 		// store 2 to 10 in deck array.
@@ -66,45 +70,76 @@ public class Main {
 	public static void main(String[] args) {
 		
 		createDeck();
+		String rematch;
 		
-		System.out.println("\n     "
-				+ "\n     *~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*"
-				+ "\n     Welcome to the game of Poker! "
-				+ "\n     *~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*\n");
+		do {
+			System.out.println("\n     " + "\n     * ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ *"
+					+ "\n       Welcome to the game of Poker! " + "\n     * ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ *\n");
+
+			// Print out basic how to play and rules.
+			System.out.println("     How to play:");
+
+			System.out.println("     Decide who is Player 1 and Player 2.\n");
+			System.out.print("     Enter Player 1's name: ");
+			String temp = sc.next();
+			String p1Name = temp.substring(0, 1).toUpperCase() + temp.substring(1).toLowerCase(); // makes the first letter of name capital, and rest lower case.
+			sc.nextLine();
+
+			System.out.print("     Enter Player 2's name: ");
+			temp = sc.next();
+			String p2Name = temp.substring(0, 1).toUpperCase() + temp.substring(1).toLowerCase(); // makes the first letter of name capital, and rest lower case.
+			sc.nextLine();
+
+			System.out.println("\n     The Small blind will go to " + p1Name + ", meaning a mandatory bet of $1.");
+			System.out.println("\n     The Big blind will go to " + p2Name + ", meaning a mandatory bet of $2.");
+			p1Money -= 1;
+			p2Money -= 2;
+			outMoney(p1Name, p2Name);
+
+			System.out.println("    The hole cards for each player will now be dealt. Enter to continue.");
+			sc.nextLine();
+			dealHoleCards(p1Name, p2Name);
+
+			// deal flop
+			System.out.println("     The community cards will now be revealed:");
+			dealFlop();
+			for (int i = 0; i < 3; i++) {
+				System.out.println("          --> " + communityCards[i]);
+			}
+
+			// betting round
+			
+			
+			// deal turn
+			
+			
+			// betting round
+			
+			
+			// deal river
+			
+			
+			// betting round
+			
+			
+			// find winner
+			compareHands();
+			
+			
+			System.out.println("     Do you want a rematch? Enter \"yes\" or \"no\"");
+			rematch = sc.next();
+			
+			while (!rematch.equalsIgnoreCase("yes") && !rematch.equalsIgnoreCase("no")) {
+				System.out.println("     Invalid, please enter again.");
+				System.out.print("          ~~~~~: ");
+			}
+			
+		} while (rematch.equals("yes"));
 		
-		// Print out basic how to play and rules.
-		System.out.println("     How to play:");
-		
-		System.out.println("     Decide who is Player 1 and Player 2.\n");
-		System.out.print("     Enter Player 1's name: ");
-		String temp = sc.next();
-		String p1Name = temp.substring(0, 1).toUpperCase() + temp.substring(1).toLowerCase(); // makes the first letter of name capital, and rest lower case.
-		sc.nextLine();
-		
-		System.out.print("     Enter Player 2's name: ");
-		temp = sc.next();
-		String p2Name = temp.substring(0, 1).toUpperCase() + temp.substring(1).toLowerCase(); // makes the first letter of name capital, and rest lower case.
-		sc.nextLine();
-		
-		System.out.println("\n     The Small blind will go to " + p1Name + ", meaning a mandatory bet of $1.");
-		System.out.println("\n     The Big blind will go to " + p2Name + ", meaning a mandatory bet of $2.");
-		p1Money -= 1;
-		p2Money -= 2;
-		outMoney(p1Name, p2Name);
-		
-		
-		System.out.println("    The hole cards for each player will now be dealt. Enter to continue.");
-		sc.nextLine();
-		dealHoleCards(p1Name, p2Name);
-		
-		
-		// deal flop
-		System.out.println("     The community cards will now be revealed:");
-		dealFlop();
-		for(int i = 0; i < 3; i++) {
-			System.out.println("          --> " + communityCards[i]);
-		}
-		
+		System.out.println("          *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+		System.out.println("          | |   THANSK FR PAYING! :D    | |");
+		System.out.println("          *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+		System.out.println("\n          This game was created by eBIC gAmer sICOeTY(tm)");
 	}
 	
 	static void outMoney(String p1Name, String p2Name) { // printing out money for each player
@@ -117,19 +152,33 @@ public class Main {
 		System.out.println();
 	}
 	
+	static int checkValid (int cardNumber) { // check if card was dealt already
+		
+		while (usedCards[cardNumber] == true) {
+			cardNumber = (int) (Math.random()*51+1);
+		}
+		
+		return cardNumber;
+	}
+	
 	static void dealHoleCards(String p1, String p2) {
 		Random random = new Random();
 
+		// randomly choose the hole cards
 		int cardNumber;
 		for (int i = 0; i < 2; i++) {
-			cardNumber = (int) (Math.random()*52+1);
+			cardNumber = (int) (Math.random()*51+1);
 		//	cardNumber = Random.nextInt(52);
+			cardNumber = checkValid(cardNumber);
+			usedCards[cardNumber] = true;
 			playerOneHoleCards[i] = deck[cardNumber];
 		}
 
 		for (int i = 0; i < 2; i++) {
-			cardNumber = (int) (Math.random()*52+1);
+			cardNumber = (int) (Math.random()*51+1);
+			cardNumber = checkValid(cardNumber);
 		//	cardNumber = Random.nextInt(52);
+			usedCards[cardNumber] = true;
 			playerTwoHoleCards[i] = deck[cardNumber];
 		}
 
@@ -140,12 +189,11 @@ public class Main {
 			System.out.print(playerOneHoleCards[i] + "     ");
 		}
 		
-		System.out.println("          Enter to continue.");
+		System.out.println("\n          Enter to continue.");
 		sc.nextLine();
-		
-		for(int j = 0; j < 50; j++) { // clear page so player 2 can't see previous cards
-			System.out.println();
-		}
+
+		 // clear page so player 2 can't see previous cards
+		for(int j = 0; j < 50; j++) { System.out.println(); }
 
 		
 		System.out.println("    Make sure " + p1 + " doesn't look at the screen. Enter to continue.");
@@ -155,12 +203,11 @@ public class Main {
 			System.out.print(playerTwoHoleCards[i] + "     ");
 		}
 		
-		System.out.println("          Enter to continue.");
+		System.out.println("\n          Enter to continue.");
 		sc.nextLine();
 		
-		for(int j = 0; j < 50; j++) { // clear page so player 1 can't see cards
-			System.out.println();
-		}
+		// clear page so player 1 can't see cards
+		for(int j = 0; j < 50; j++) { System.out.println(); }
 		
 	}
 	
@@ -175,7 +222,9 @@ public class Main {
 		int i;
 		for (i = 0; i < 3; i++) {
 		//	cardNumber = Random.nextInt(52);
-			cardNumber = (int) (Math.random()*52+1);
+			cardNumber = (int) (Math.random()*51+1);
+			cardNumber = checkValid(cardNumber);
+			usedCards[cardNumber] = true;
 			communityCards[i] = deck[cardNumber];
 		}
 
