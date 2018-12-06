@@ -380,4 +380,83 @@ public class Main {
 		return finalHand[c];
 	}
 
+//derrick's stuff, this is for the entire betting round
+ (incomplete)
+ 
+ public static boolean validateNumbers(String n) {
+        String numbers[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+        int total = 0;
+        for (int i = 0; i < n.length(); i++) {
+            for (int j = 0; j < 10; j++) {
+                if (n.charAt(i) == numbers[j].charAt(0)) {
+                    total++;
+                }
+            }
+        }
+        if (total == n.length()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static void betting(int player, int raised, boolean bettingArray[], String name) {
+        bettingArray[0] = false; //sets the boolean that means the previous player betted to false
+        bettingArray[1] = false; //sets the booealan that means the previous player folded to false
+        Scanner input = new Scanner(System.in);
+        System.out.println("     Welcome player " + name); //introduce
+        System.out.println();
+        if (raised > 0) {
+            System.out.println("     The amount of money that has been raised to that you need to match is: ");
+        } else {
+            System.out.println("     There has been no raised money so far.");
+        }
+        if (player == 0 && raised == 0) {//the first player the 1st time they go
+            System.out.println("     You have the option to bet, fold, or check");
+            System.out.println("             Bet         Fold           Check ");
+            System.out.println("             (1)         (2)              (3)");
+            String option = input.nextLine(); //save value as string, change to integer later
+            if (!option.equals("1") && !option.equals("2") && !option.equals("3")) { //input validation, make sure they enter 1, 2, 3
+                System.out.println("               Invalid input. Please enter 1, 2, or 3");
+                option = input.nextLine();
+            }
+            int intOption = Integer.parseInt(option);
+            if (intOption == 1) { //betting
+                bettingArray[0] = true; //sets the boolean for betting to true, next player goes in order to continue
+                System.out.println("     You have the option to bet or go all in"); //prompt user to choose to bet or go all in
+                System.out.println("             Bet         All In");
+                System.out.println("             (1)         (2)");
+                option = input.nextLine();
+                if (!option.equals("1") && !option.equals("2")) { //input validation, make sure they enter 1, 2, 3
+                    System.out.println("          Invalid input. Please enter 1 or 2");
+                    option = input.nextLine();
+                }
+                intOption = Integer.parseInt(option);
+                if (intOption == 1) { //bet
+                    System.out.println("     What amount of money would you like to bet?");
+                    String bet = input.nextLine();
+                    while (validateNumbers(bet) == false || Integer.parseInt(bet) < playerMoney[player]) { //validate that the money is an integer
+                        System.out.println("          The money entered is invalid, enter again.");
+                        bet = input.nextLine();
+                    }
+                    raised = Integer.parseInt(bet);
+                    System.out.println("    The pot now has $" + raised);
+                    playerMoney[player] -= raised;
+                    return; //go back
+                } else { //all in
+                    System.out.println("     You have put in all your money, which is $" + playerMoney[player]);
+                    raised = playerMoney[player]; //the money in the pot is all their money
+                    playerMoney[player] = 0; //the player has no more money
+                }
+            } else if (intOption == 2) { //fold
+                bettingArray[1] = true; //sets the fold array to true
+                
+            } else if (intOption == 3) { //check
+                
+            }
+
+        }
+    }
+
+
 }
