@@ -14,8 +14,7 @@ public class Main {
 	static String[] deck = new String[52];
 	static boolean[] usedCards = new boolean[52];
 	
-	static int p1Money = 50;
-	static int p2Money = 50;
+	static int [] playerMoney = {50 , 50};
 	static String[] playerOneHoleCards = new String[2];
 	static String[] playerTwoHoleCards = new String[2];
 	
