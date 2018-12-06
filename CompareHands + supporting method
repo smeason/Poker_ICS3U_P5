@@ -1,0 +1,70 @@
+static void compareHands (String p1, String p2) {
+		
+		String[] finalHandP1 = new String[5]; // storing the 2 cards to remove for p1.
+		int c = 0; // counter for index of finalHand array.
+		
+		System.out.println("     Now that the final betting round has been finished, we will now determine the winner.");
+		sc.nextLine();
+		
+		System.out.println("     " + p1 + " will now show their cards to " + p2);
+		sc.nextLine();
+		System.out.println("          " + playerOneHoleCards[0] + " and " + playerOneHoleCards[1]);
+		finalHandP1 = getInput(finalHandP1, p1, p2, c); // doesn't check if both community cards are the same.
+		
+		
+		String[] finalHandP2 = new String[5]; // storing the 2 cards to remove for p2.
+		c = 0;
+		
+		System.out.println("     " + p2 + " will now show their cards to " + p1);
+		sc.nextLine();
+		System.out.println("          " + playerTwoHoleCards[0] + " and " + playerTwoHoleCards[1]);
+		finalHandP2 = getInput(finalHandP2, p1, p2, c);
+		
+	}
+	
+	static String[] getInput (String[] finalHand, String p1, String p2, int c) {
+		
+		// start getting input from player 1.
+		System.out.println("     What community cards do you want to remove? (e.g. Ace of Hearts.)");
+		System.out.println("\n     Here are all the available cards:");
+		for(int i = 0; i < 5; i++) {
+			System.out.println("          --> " + communityCards[i]);
+		}
+		
+		System.out.println("          Enter the first community card to remove:"); // reading all the five best cards for player 1.
+		System.out.print("            ~~~~~: ");
+		finalHand[c] = sc.nextLine();
+		System.out.println(finalHand[c]);
+		finalHand[c] = ValidCommunity(finalHand, c);
+		c++;
+
+		System.out.println("          Enter the second community card to remove:");
+		System.out.print("            ~~~~~: ");
+		finalHand[c] = sc.nextLine();
+		finalHand[c] = ValidCommunity(finalHand, c);
+		
+		return finalHand;
+
+	}
+	
+	static String ValidCommunity(String[] finalHand, int c) {
+		
+		do { // end when input is a valid card
+			int countValid = 0;
+			for(int j = 0; j < 5; j++) {
+				if (finalHand[c].equals(communityCards[j])) {
+					countValid++;
+				}
+			}
+			if (countValid != 1) {
+				System.out.print("          Invalid input, please enter community card again.");
+				System.out.print("\n               ~~~~~: ");
+				finalHand[c] = sc.nextLine();
+			} else {
+				break;
+			}
+			
+		} while (true);
+		
+		return finalHand[c];
+	}
