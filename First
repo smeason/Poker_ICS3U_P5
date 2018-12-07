@@ -330,6 +330,28 @@ public class Main {
 		for(int i = 0; i < 5; i++) {
 			System.out.println("     " + bestHP2[i]);
 		}
+		int[] StringToNum = new int[5];
+		for(int i = 0; i < 5; i++) { // convert the string of each card to a number (e.g. Ace of Hearts --> 14)
+			String temp = bestHP1[i].substring(0,1);
+			int convert = 0;
+			if (temp.equals("J")) {
+				convert = 11;
+			} else if (temp.equals("Q")) {
+				convert = 12;
+			} else if (temp.equals("K")) {
+				convert = 13;
+			} else if (temp.equals("A")) {
+				convert = 14;
+			} else if (temp.equals("1")) {
+				convert = 10;
+			} else if (temp.equals("2")){
+				convert = 15;
+			} else {
+				convert = Integer.valueOf(temp);
+			}
+			StringToNum[i] = convert;
+			System.out.println("convert: " + convert);
+		}
 		
 	}
 	
