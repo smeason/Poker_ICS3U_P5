@@ -161,7 +161,7 @@ public class Main {
 		Thread.sleep(500);
 		System.out.println("\n                             Derrick");
 		Thread.sleep(500);
-		System.out.println("\n                         and Samson");
+		System.out.println("\n                         and Samson (aka Smeason)");
 	}
 	
 	static void outMoney(String p1Name, String p2Name) { // printing out money for each player
