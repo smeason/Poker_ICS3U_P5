@@ -19,6 +19,8 @@ public class Main {
 	static String[] playerOneHoleCards = new String[2];
 	static String[] playerTwoHoleCards = new String[2];
 	
+	static int raised = 0;
+	
 	static String[] communityCards = new String[5];
 	
 	static int turn = 0; // 0 is p1's turn, 1 is p2's turn
