@@ -23,7 +23,8 @@ public class Main {
 	
 	static int turn = 0; // 0 is p1's turn, 1 is p2's turn
 	
-	static int highCardStraightFlush = 0;
+	static int highestCardP1 = 0;
+	static int highestCardP2 = 0;
 	static int numPairs = 0;
 	
 	static void createDeck () {
@@ -336,82 +337,107 @@ public class Main {
 		
 		// Royal Flush > Straight Flush > Four of a Kind > Full House > Flush > Straight > Three of a Kind > Two Pairs > One Pair > High Card
 		
-		// convert string to num, jack to 11
-		int[] stringToNum = new int[5];
-		for (int i = 0; i < 5; i++) { // convert the string of each card to a number (e.g. Ace of Hearts --> 14)
-			String temp = bestHP1[i].substring(0, 1);
-			int convert = 0;
-			if (temp.equals("J")) {
-				convert = 11;
-			} else if (temp.equals("Q")) {
-				convert = 12;
-			} else if (temp.equals("K")) {
-				convert = 13;
-			} else if (temp.equals("A")) {
-				convert = 14;
-			} else if (temp.equals("1")) {
-				convert = 10;
-			} else {
-				convert = Integer.valueOf(temp);
-			}
-			stringToNum[i] = convert;
-			System.out.println("convert: " + convert);
-		}
-		
-		// convert suite to values of 1-4. e.g. diamond = 1, club = 2
-		String[] possibleFlush = new String[5];
-		int[] suiteP1 = new int[5];
-		for(int i = 0; i < 5; i++) {
-			possibleFlush[i] = bestHP1[i].substring(bestHP1[i].length()-2, bestHP1[i].length()-1);
-			for(int j = bestHP1[i].length()-3; j >= 0; j--) {
-				if (bestHP1[i].charAt(j) == ' ') {
-					break;
+		for(int i = 0; i < 2; i++) { // see what both players have
+			String[] playerHands = new String[5];
+			if (i == 0) {
+				for(int j = 0; j < 5; j++) {
+					playerHands[j] = bestHP1[j];
+				//	System.out.println(playerHands[j]);
 				}
-				possibleFlush[i] += bestHP1[i].charAt(j);
+			} else if (i == 1) {
+				for(int j = 0; j < 5; j++) {
+					playerHands[j] = bestHP2[j];
+				//	System.out.println(playerHands[j]);
+				}
 			}
-			System.out.println(possibleFlush[i]);
-			if (possibleFlush[i].equals("dnomaiD")) { // stores suite backwards, because string is read from last character.
-				suiteP1[i] = 1;
-			} else if (possibleFlush[i].equals("bulC")) {
-				suiteP1[i] = 2;
-			} else if (possibleFlush[i].equals("traeH")) {
-				suiteP1[i] = 3;
-			} else if (possibleFlush[i].equals("edapS")) {
-				suiteP1[i] = 4;
+			
+			// convert string to num, jack to 11
+			int[] stringToNum = new int[5];
+			for (int j = 0; j < 5; j++) { // convert the string of each card to a number (e.g. Ace of Hearts --> 14)
+				String temp = playerHands[j].substring(0, 1);
+				int convert = 0;
+				if (temp.equals("J")) {
+					convert = 11;
+				} else if (temp.equals("Q")) {
+					convert = 12;
+				} else if (temp.equals("K")) {
+					convert = 13;
+				} else if (temp.equals("A")) {
+					convert = 14;
+				} else if (temp.equals("1")) {
+					convert = 10;
+				} else {
+					convert = Integer.valueOf(temp);
+				}
+				stringToNum[j] = convert;
+			//	System.out.println("convert: " + convert);
 			}
-		//	System.out.println(suiteP1[i]);
+			
+			// convert suite to values of 1-4. e.g. diamond = 1, club = 2
+			String[] possibleFlush = new String[5];
+			int[] suiteP1 = new int[5];
+			for(int j = 0; j < 5; j++) {
+				possibleFlush[j] = playerHands[j].substring(playerHands[j].length()-2, playerHands[j].length()-1);
+				for(int k = playerHands[j].length()-3; k >= 0; k--) {
+					if (playerHands[j].charAt(k) == ' ') {
+						break;
+					}
+					possibleFlush[j] += playerHands[j].charAt(k);
+				}
+			//	System.out.println(possibleFlush[j]);
+				if (possibleFlush[j].equals("dnomaiD")) { // stores suite backwards, because string is read from last character.
+					suiteP1[j] = 1;
+				} else if (possibleFlush[j].equals("bulC")) {
+					suiteP1[j] = 2;
+				} else if (possibleFlush[j].equals("traeH")) {
+					suiteP1[j] = 3;
+				} else if (possibleFlush[j].equals("edapS")) {
+					suiteP1[j] = 4;
+				}
+			}
+			
+			boolean ifStraight = checkStraight(playerHands, stringToNum, i); // check for straight in player one hand
+			boolean ifFlush = checkFlush(playerHands, suiteP1); // check for flush in player one's hand.
+			int which = checkDoublesTriplesQuads(stringToNum);
+		
+		//	System.out.println("which" + which);
+			int highest = 0;
+			if (turn == 0) {
+				highest = highestCardP1;
+			} else {
+				highest = highestCardP2;
+			}
+			
+			boolean bad = false;
+			if (ifStraight && ifFlush && highest == 14) { // check for royal flush
+				System.out.println("Royal Flush");
+			} else if (ifStraight && ifFlush) { // check for straight flush
+				System.out.println("Straight flush");
+			} else if (ifStraight) {
+				System.out.println("Straight");
+			} else if (ifFlush) {
+				System.out.println("Flush");
+			} else if (which == 4){
+				System.out.println("Four of a kind.");
+			} else if (which == 3 && numPairs == 1) {
+				System.out.println("Full House");
+			} else if (which == 3) {
+				System.out.println("Three of a kind.");
+			} else if (which == 2 && numPairs == 2) {
+				System.out.println("Two Pairs.");
+			} else if (which == 2) {
+				System.out.println("Pair");
+			} else {
+				System.out.println("Lol your hand is bad.");
+				System.out.println("     Your highest Card is: " + highest);
+				bad = true;
+			}
+			
+			if (bad == false) {
+				System.out.println("Highest Card: " + highest);
+			}
+			
 		}
-		
-		boolean ifStraight = checkStraight(bestHP1, stringToNum); // check for straight in player one hand
-		boolean ifFlush = checkFlush(bestHP1, suiteP1); // check for flush in player one's hand.
-		int which = checkDoublesTriplesQuads(stringToNum);
-		
-		if (ifStraight && ifFlush && highCardStraightFlush == 14) { // check for royal flush
-			System.out.println("Royal Flush");
-		} else if (ifStraight && ifFlush) { // check for straight flush
-			System.out.println("Straight flush");
-		} else if (ifStraight) {
-			System.out.println("Straight");
-		} else if (ifFlush) {
-			System.out.println("Flush");
-		} else if (which == 4){
-			System.out.println("Four of a kind.");
-		} else if (which == 3 && numPairs == 1) {
-			System.out.println("Full House");
-		} else if (which == 3) {
-			System.out.println("Three of a kind.");
-		} else if (which == 2 && numPairs == 2) {
-			System.out.println("Two Pairs.");
-		} else if (which == 2) {
-			System.out.println("Pair");
-		} else {
-			System.out.println("Lol your hand is bad.");
-			System.out.println("     Your highest Card is: " + highCardStraightFlush);
-		}
-		System.out.println("Highest Card: " + highCardStraightFlush);
-		
-		
-		
 		
 		
 	}
@@ -463,10 +489,15 @@ public class Main {
 		return finalHand[c];
 	}
 
-	static boolean checkStraight(String[] bestHP1, int[] stringToNum) {
+	static boolean checkStraight(String[] playerHands, int[] stringToNum, int turn) {
 		// check for straight
 		Arrays.sort(stringToNum); // sort stringToNum from low to high
-		highCardStraightFlush = stringToNum[4]; // check for royal flush later, and compare who has higher straight.
+		if (turn == 0) {
+			highestCardP1 = stringToNum[4]; // check for royal flush later, and compare who has higher straight.
+		} else {
+			highestCardP2 = stringToNum[4];
+		}
+		
 		int previous = stringToNum[0];
 		boolean ifStraight = false;
 
@@ -508,7 +539,7 @@ public class Main {
 		}
 		
 		for (int i = 0; i < 5; i++) {
-			tally[communityCards[i]]++;
+			tally[communityCards[i]-1]++;
 		}
 
 		int which = 0;
@@ -516,14 +547,14 @@ public class Main {
 		for (int i = 1; i < 14; i++) {
 			if (tally[i] > 1) {
 				if (tally[i] == 2) {
-					System.out.println("There is a double");
+				//	System.out.println("There is a double");
 					numPairs++; // count number of pairs to check for two pair and full house.
 					which = 2;
 				} else if (tally[i] == 3) {
-					System.out.println("There is a triple");
+				//	System.out.println("There is a triple");
 					which = 3;
 				} else if (tally[i] == 4) {
-					System.out.println("There is a quadruple");
+				//	System.out.println("There is a quadruple");
 					which = 4;
 				}
 			}
