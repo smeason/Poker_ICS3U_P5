@@ -27,6 +27,16 @@ public class Main {
 	static int highestCardP2 = 0;
 	static int numPairs = 0;
 	
+	static int raised = 0;
+   	static boolean[] allIn = new boolean[2];
+    	static boolean[] bettingArray = new boolean[2]; //first one is for betted, second is for checked
+    	static boolean bothAllIn = false; // for when both players go all in
+
+    	static String p1Name = "derrick";
+    	static String p2Name = "john";
+
+    	static int pot = 0;
+	
 	static void createDeck () {
 		// store 2 to 10 in deck array.
 		int cardNum = 2;
@@ -111,7 +121,7 @@ public class Main {
 			}
 
 			// betting round
-			
+			if (entireBettingRound() == false )break;
 			
 			// deal turn
 			System.out.println("     The turn or 4th community card will now be revealed:");
@@ -119,7 +129,7 @@ public class Main {
 			System.out.println("          --> " + communityCards[3]);
 			
 			// betting round
-			
+			if (entireBettingRound() == false )break;
 			
 			// deal river
 			System.out.println("     The river or 5th community card will now be revealed:");
@@ -127,11 +137,11 @@ public class Main {
 			System.out.println("          --> " + communityCards[4]);
 			
 			// betting round
-			
+			if (entireBettingRound() == false )break;
 			
 			// find winner
 			compareHands(p1Name, p2Name);
-			
+			System.out.println("The pot money won is: " + pot);
 			
 			System.out.println("     Do you want a rematch? Enter \"yes\" or \"no\"");
 			rematch = sc.next();
@@ -563,10 +573,7 @@ public class Main {
 		return which;
 	}
 
-//derrick's stuff, this is for the entire betting round
- (incomplete)
- 
- public static boolean validateNumbers(String n) {
+public static boolean validateNumbers(String n) {
         String numbers[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
         int total = 0;
         for (int i = 0; i < n.length(); i++) {
@@ -583,23 +590,23 @@ public class Main {
         }
     }
 
-    public static void betting(int player, int raised, boolean bettingArray[], String name) {
-        bettingArray[0] = false; //sets the boolean that means the previous player betted to false
-        bettingArray[1] = false; //sets the booealan that means the previous player folded to false
+    public static boolean betting(int player, String name) { //entire betting round, returns if they folded or not
+        if (bothAllIn == true) return true;
         Scanner input = new Scanner(System.in);
-        System.out.println("     Welcome player " + name); //introduce
+        System.out.println("     Welcome " + name); //introduce
         System.out.println();
         if (raised > 0) {
-            System.out.println("     The amount of money that has been raised to that you need to match is: ");
+            System.out.println("     The amount of money that has been raised to that you need to match is: " + raised);
         } else {
             System.out.println("     There has been no raised money so far.");
         }
-        if (player == 0 && raised == 0) {//the first player the 1st time they go
+        if (player == 0 && raised == 0 || bettingArray[1] == true) {//the first player the 1st time they go
+            bettingArray[1] = false;
             System.out.println("     You have the option to bet, fold, or check");
             System.out.println("             Bet         Fold           Check ");
             System.out.println("             (1)         (2)              (3)");
             String option = input.nextLine(); //save value as string, change to integer later
-            if (!option.equals("1") && !option.equals("2") && !option.equals("3")) { //input validation, make sure they enter 1, 2, 3
+            while (!option.equals("1") && !option.equals("2") && !option.equals("3")) { //input validation, make sure they enter 1, 2, 3
                 System.out.println("               Invalid input. Please enter 1, 2, or 3");
                 option = input.nextLine();
             }
@@ -610,7 +617,7 @@ public class Main {
                 System.out.println("             Bet         All In");
                 System.out.println("             (1)         (2)");
                 option = input.nextLine();
-                if (!option.equals("1") && !option.equals("2")) { //input validation, make sure they enter 1, 2, 3
+                while (!option.equals("1") && !option.equals("2")) { //input validation, make sure they enter 1, 2
                     System.out.println("          Invalid input. Please enter 1 or 2");
                     option = input.nextLine();
                 }
@@ -618,27 +625,121 @@ public class Main {
                 if (intOption == 1) { //bet
                     System.out.println("     What amount of money would you like to bet?");
                     String bet = input.nextLine();
-                    while (validateNumbers(bet) == false || Integer.parseInt(bet) < playerMoney[player]) { //validate that the money is an integer
+                    while (validateNumbers(bet) == false || Integer.parseInt(bet) > playerMoney[player]) { //validate that the money is an integer
                         System.out.println("          The money entered is invalid, enter again.");
                         bet = input.nextLine();
                     }
                     raised = Integer.parseInt(bet);
                     System.out.println("    The pot now has $" + raised);
                     playerMoney[player] -= raised;
-                    return; //go back
+                    return true; //go back
                 } else { //all in
                     System.out.println("     You have put in all your money, which is $" + playerMoney[player]);
                     raised = playerMoney[player]; //the money in the pot is all their money
                     playerMoney[player] = 0; //the player has no more money
+                    allIn[player] = true;
                 }
             } else if (intOption == 2) { //fold
-                bettingArray[1] = true; //sets the fold array to true
-                
+                return false; //folded
+
             } else if (intOption == 3) { //check
-                
+                bettingArray[1] = true; //boolean to say they checked as true
+                return true; //didnt fold
+            }
+
+        } else { //player 2 or there is money inside the pot already
+            bettingArray[0] = false;
+            System.out.println("     You have the option to raise, fold, or call");
+            System.out.println("            Raise       Fold        Call ");
+            System.out.println("             (1)         (2)        (3)");
+            String option = input.nextLine(); //save value as string, change to integer later
+            if (!option.equals("1") && !option.equals("2") && !option.equals("3")) { //input validation, make sure they enter 1, 2, 3
+                System.out.println("               Invalid input. Please enter 1, 2, or 3");
+                option = input.nextLine();
+            }
+            int intOption = Integer.parseInt(option);
+            if (intOption == 1) { //raise and all in
+
+                System.out.println("     You have the option to raise or go all in"); //prompt user to choose to raise or go all in
+                System.out.println("            Raise       All In");
+                System.out.println("             (1)         (2)  ");
+                option = input.nextLine();
+                while (!option.equals("1") && !option.equals("2")) { //input validation, make sure they enter 1, 2
+                    System.out.println("          Invalid input. Please enter 1 or 2");
+                    option = input.nextLine();
+                }
+                intOption = Integer.parseInt(option);
+                if (intOption == 1) { //to raise
+                    bettingArray[0] = true; //other player must go again
+                    System.out.println("     What amount of money would you like to raise to?");
+                    String bet = input.nextLine();
+                    while (validateNumbers(bet) == false || Integer.parseInt(bet) > playerMoney[player] || Integer.parseInt(bet) <= raised) { //validate that the money is an integer
+                        System.out.println("          The money entered is invalid, enter again.");
+                        bet = input.nextLine();
+                    }
+                    raised = Integer.parseInt(bet);
+                    System.out.println("    The pot now has $" + raised);
+                    playerMoney[player] -= raised;
+                    return true; //go back
+                } else { //all in
+                    System.out.println("     You have put in all your money, which is $" + playerMoney[player]);
+                    raised = playerMoney[player]; //the money in the pot is all their money
+                    playerMoney[player] = 0; //the player has no more money
+                    allIn[player] = true;
+                    return true; //go back
+                }
+            } else if (intOption == 2) { //fold
+                return false; //folded
+            } else { //call
+                playerMoney[player] -= raised;
+                return true; //didnt fold
             }
 
         }
+
+        return true;
+    }
+
+    public static boolean entireBettingRound() {
+
+        if (betting(0, p1Name)) {
+            if (betting(1, p2Name)) {
+                if (allIn [0] == true && allIn[1] == true){
+                    System.out.println("Both players went all in. Now its time for the flops.");
+                    bothAllIn = true;
+                    return false;
+                }
+                while (bettingArray[1] == true){ //while they stay checked
+                    if (betting(0, p1Name)){ //if they dont fold
+                        while (bettingArray[0] == true){ //while they keep on raising
+                            betting(1, p2Name);
+                            if (bettingArray[1] == false) break; //exits if it is not true
+                            betting(0, p1Name);
+                        }
+                        pot += raised;
+                    }
+                    else {
+                        System.out.println("     " + p1Name + " has folded");
+                        System.out.println("     " + p2Name + " has gained the pot, which is: $" + raised);
+                        playerMoney[1] += raised;
+                        return false;
+                    }
+                }
+                pot += raised;
+            } else {
+                System.out.println("     " + p2Name + " has folded");
+                System.out.println("     " + p1Name + " has gained the pot, which is: $" + raised);
+                playerMoney[0] += raised;
+                return false;
+            }
+
+        } else {
+            System.out.println("     " + p1Name + " has folded");
+            System.out.println("     " + p2Name + " has gained the pot, which is: $" + raised);
+            playerMoney[1] += raised;
+            return false;
+        }
+        return true;
     }
 
 
