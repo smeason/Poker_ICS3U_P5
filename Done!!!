@@ -325,84 +325,94 @@ public class WithBetting {
 		return communityCards[4];
 	}
 
-	static void compareHands(String p1, String p2) {
-
+	static void compareHands (String p1, String p2) {
+		
 		String[] finalHandP1 = new String[2]; // storing the 2 cards to remove for p1.
 		int c = 0; // counter for index of finalHand array.
-
-		System.out
-				.println("     Now that the final betting round has been finished, we will now determine the winner.");
+		
+		System.out.println("     Now that the final betting round has been finished, "
+				+ "we will now determine the winner.");
 		sc.nextLine();
-
+		
 		System.out.println("     " + p1 + " will now show their cards to " + p2);
 		sc.nextLine();
-		System.out.println("          " + playerOneHoleCards[0] + " and " + playerOneHoleCards[1]);
-		finalHandP1 = getInput(finalHandP1, p1, p2, c); // doesn't check if both community cards are the same.
-
+		System.out.println("          " + playerOneHoleCards[0] + " and " + 
+				playerOneHoleCards[1]);
+		finalHandP1 = getInput(finalHandP1, p1, p2, c); // doesn't check if both 
+														// community cards are the same.
+		
+		
 		String[] finalHandP2 = new String[2]; // storing the 2 cards to remove for p2.
 		c = 0;
-
+		
 		System.out.println("     " + p2 + " will now show their cards to " + p1);
 		sc.nextLine();
-		System.out.println("          " + playerTwoHoleCards[0] + " and " + playerTwoHoleCards[1]);
+		System.out.println("          " + playerTwoHoleCards[0] + " and " + 
+				playerTwoHoleCards[1]);
 		finalHandP2 = getInput(finalHandP2, p1, p2, c);
-
+		
 		String[] bestHP1 = new String[5]; // stores best hand of player one.
-
+		
 		bestHP1[0] = playerOneHoleCards[0];
 		bestHP1[1] = playerOneHoleCards[1];
-
+		
 		int bestHandCounter = 2;
-		for (int i = 0; i < communityCards.length; i++) {
-			if (communityCards[i].equals(finalHandP1[0]) || communityCards[i].equals(finalHandP1[1])) {
+		for(int i = 0; i < communityCards.length; i++) {
+			if (communityCards[i].equals(finalHandP1[0]) || 
+					communityCards[i].equals(finalHandP1[1])) {
 			} else {
 				bestHP1[bestHandCounter] = communityCards[i];
 				bestHandCounter++;
 			}
 		}
-		System.out.println("Best Hand (p1):");
-		for (int i = 0; i < 5; i++) {
+		System.out.println("Best Hand " + p1 + ":");
+		for(int i = 0; i < 5; i++) {
 			System.out.println("     " + bestHP1[i]);
 		}
-
+		
+		
 		String[] bestHP2 = new String[5]; // stores best hand of player two.
-
+		
 		bestHP2[0] = playerTwoHoleCards[0];
 		bestHP2[1] = playerTwoHoleCards[1];
-
+		
 		bestHandCounter = 2;
-		for (int i = 0; i < communityCards.length; i++) {
-			if (communityCards[i].equals(finalHandP2[0]) || communityCards[i].equals(finalHandP2[1])) {
+		for(int i = 0; i < communityCards.length; i++) {
+			if (communityCards[i].equals(finalHandP2[0]) || 
+					communityCards[i].equals(finalHandP2[1])) {
 			} else {
 				bestHP2[bestHandCounter] = communityCards[i];
 				bestHandCounter++;
 			}
 		}
-		System.out.println("Best Hand (p2):");
-		for (int i = 0; i < 5; i++) {
+		System.out.println("Best Hand " + p2 + ":");
+		for(int i = 0; i < 5; i++) {
 			System.out.println("     " + bestHP2[i]);
 		}
-
-		// Ranking's of cards
-		// Royal Flush > Straight Flush > Four of a Kind > Full House > Flush > Straight
-		// > Three of a Kind > Two Pairs > One Pair > High Card
 		
 		
-		for (int i = 0; i < 2; i++) { // see what both players have
+		int[] qualityOfHands = new int[2]; // stores what they got as a number 
+										   // (array to store 2 numbers for both 
+										   // players), e.g. royal flush == 1, 
+										   // four of a kind == 3
+		
+		for(int i = 0; i < 2; i++) { // see what both players have
 			String[] playerHands = new String[5];
 			if (i == 0) {
-				for (int j = 0; j < 5; j++) {
+				for(int j = 0; j < 5; j++) {
 					playerHands[j] = bestHP1[j];
 				}
 			} else if (i == 1) {
-				for (int j = 0; j < 5; j++) {
+				for(int j = 0; j < 5; j++) {
 					playerHands[j] = bestHP2[j];
 				}
 			}
-
+			
 			// convert string to num, e.g. jack to 11
 			int[] stringToNum = new int[5];
-			for (int j = 0; j < 5; j++) {
+			for (int j = 0; j < 5; j++) { // convert the string of each card 
+										  // to a number 
+										  // (e.g. Ace of Hearts --> 14)
 				String temp = playerHands[j].substring(0, 1);
 				int convert = 0;
 				if (temp.equals("J")) {
@@ -420,76 +430,112 @@ public class WithBetting {
 				}
 				stringToNum[j] = convert;
 			}
-
+			
 			// convert suite to values of 1-4. e.g. diamond = 1, club = 2
 			String[] possibleFlush = new String[5];
-			int[] suiteP1 = new int[5];
-			for (int j = 0; j < 5; j++) {
+			int[] suits = new int[5];
+			for(int j = 0; j < 5; j++) {
 				possibleFlush[j] = playerHands[j].substring
-						(playerHands[j].length() - 2, playerHands[j].length() - 1);
+						(playerHands[j].length()-2, playerHands[j].length()-1);
 				
-				for (int k = playerHands[j].length() - 3; k >= 0; k--) {
+				for(int k = playerHands[j].length()-3; k >= 0; k--) {
 					if (playerHands[j].charAt(k) == ' ') {
 						break;
 					}
 					possibleFlush[j] += playerHands[j].charAt(k);
 				}
-				if (possibleFlush[j].equals("dnomaiD")) { // stores suite backwards, 
-														  // because string is read 
-														  // from last character.
-					suiteP1[j] = 1;
+				if (possibleFlush[j].equals("dnomaiD")) { // stores suite 
+														  // backwards, because 
+														  // string is read from 
+														  // last character.
+					suits[j] = 1;
 				} else if (possibleFlush[j].equals("bulC")) {
-					suiteP1[j] = 2;
+					suits[j] = 2;
 				} else if (possibleFlush[j].equals("traeH")) {
-					suiteP1[j] = 3;
+					suits[j] = 3;
 				} else if (possibleFlush[j].equals("edapS")) {
-					suiteP1[j] = 4;
+					suits[j] = 4;
 				}
 			}
-
-			boolean ifStraight = checkStraight(playerHands, stringToNum, i); // check for straight in player one hand
-			boolean ifFlush = checkFlush(playerHands, suiteP1); // check for flush in player one's hand.
+			
+			// check for straight in player one hand
+			boolean ifStraight = checkStraight(playerHands, stringToNum, i); 
+			// check for flush in player one's hand.
+			boolean ifFlush = checkFlush(playerHands, suits); 
+			// check for any kind of pair, tripe or quad
 			int which = checkDoublesTriplesQuads(stringToNum);
-
-			// System.out.println("which" + which);
+		
 			int highest = 0;
-			if (turn == 0) {
+			if (i == 0) {
 				highest = highestCardP1;
 			} else {
 				highest = highestCardP2;
 			}
-
+			
 			boolean bad = false;
-			if (ifStraight && ifFlush && highest == 14) { // check for royal flush
+			if (ifStraight && ifFlush && highest == 14) { // check for 
+														  // royal flush
 				System.out.println("Royal Flush");
-			} else if (ifStraight && ifFlush) { // check for straight flush
+				qualityOfHands[i] = 1;
+			} else if (ifStraight && ifFlush) { // check for 
+												// straight flush
 				System.out.println("Straight flush");
-			} else if (ifStraight) {
+				qualityOfHands[i] = 2;
+			} else if (ifStraight) { // check for straight
 				System.out.println("Straight");
-			} else if (ifFlush) {
+				qualityOfHands[i] = 3;
+			} else if (ifFlush) { // check for flush
 				System.out.println("Flush");
-			} else if (which == 4) {
+				qualityOfHands[i] = 4;
+			} else if (which == 4){ // check for four of a kind
 				System.out.println("Four of a kind.");
-			} else if (which == 3 && numPairs == 1) {
+				qualityOfHands[i] = 5;
+			} else if (which == 3 && numPairs == 1) { // check for
+													  // full house
 				System.out.println("Full House");
+				qualityOfHands[i] = 6;
 			} else if (which == 3) {
 				System.out.println("Three of a kind.");
+				qualityOfHands[i]= 7;
 			} else if (which == 2 && numPairs == 2) {
 				System.out.println("Two Pairs.");
+				qualityOfHands[i] = 8;
 			} else if (which == 2) {
 				System.out.println("Pair");
+				qualityOfHands[i] = 9;
 			} else {
 				System.out.println("Lol your hand is bad.");
+				qualityOfHands[i] = 10;
 				System.out.println("     Your highest Card is: " + highest);
 				bad = true;
 			}
-
 			if (bad == false) {
 				System.out.println("Highest Card: " + highest);
 			}
-
 		}
-
+		
+		// checking who won
+		if (qualityOfHands[0] < qualityOfHands[1]) { // if quality is smaller, player one wins
+			System.out.println(p1 + " WON!");
+		} else if (qualityOfHands[0] > qualityOfHands[1]) { // player 2 wins
+			System.out.println(p2 + " WON!");
+		} else { // if equal, check card number
+			if (highestCardP1 > highestCardP2) {
+				System.out.println(p1 + " WON!");
+			} else if (highestCardP1 < highestCardP2){
+				System.out.println(p2 + " WON!");
+			} else { // if still equal, check suits.
+				System.out.println("You tied!"); // should check the suit difference
+				if (qualityOfHands[0] <= 4 || qualityOfHands[0] == 10) { // then both higher than a flush, or both high card. Only need to check highest card suit
+					// check last card suit
+				} else {
+					// check who has higher pair/triple/quad, if same, check suit of higher card
+					// then if that's the same, check suit of pair/tripe/quad
+				}
+			}
+		}
+		
+		
 	}
 
 	static String[] getInput(String[] finalHand, String p1, String p2, int c) {
